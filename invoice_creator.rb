@@ -73,7 +73,6 @@ class InvoiceCreator
       "Authorization" => "Bearer #{@access_token}"
     }
     response = HTTParty.put(url, headers: headers, body: { payment_status: '1' }.to_json)
-    binding.pry
     if response.success?
       puts 'ステータスが未入金に変更されました'
     else

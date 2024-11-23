@@ -13,7 +13,7 @@ require_relative '../invoice_creator'
 department_id = 'xxxxxxxxxx'
 billing_date = Date.today.strftime('%Y-%m-%d') # 請求日（例: 今日の日付）
 due_date = Date.new(Date.today.year, Date.today.month, -1).strftime('%Y-%m-%d') # 振込期限（例: 今月末）
-sales_date = Date.new(Date.today.last_month, Time.now.month, 20).strftime('%Y-%m-%d') # 売上計上日（例: 先月末）
+sales_date = Date.new(Date.today.last_month, Time.now.month, -1).strftime('%Y-%m-%d') # 売上計上日（例: 先月末）
 item_name = 'システム開発費用' # 品目名
 item_price = 5000 # 単価
 download_path = '/path/to/download.pdf' # 請求書PDFの保存先
