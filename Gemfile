@@ -6,3 +6,5 @@ ruby '>= 3.2.2'
 
 gem 'httparty'
 gem 'dotenv'
+gem 'pry'
+gem 'pry-byebug'
