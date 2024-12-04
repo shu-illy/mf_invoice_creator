@@ -1,5 +1,3 @@
-# initial_auth.rb
-
 #!/usr/bin/env ruby
 
 require 'httparty'
@@ -15,7 +13,7 @@ class InitialAuth
     @client_id = ENV['CLIENT_ID']
     @client_secret = ENV['CLIENT_SECRET']
     @authorization_endpoint = ENV['AUTHORIZATION_ENDPOINT']
-    @redirect_uri = ENV['REDIRECT_URI'] # 必要に応じて設定
+    @redirect_uri = ENV['REDIRECT_URI']
     @scope = ENV['SCOPE']
     @code_verifier = ENV['CODE_VERIFIER']
     if @token_endpoint.nil? || @token_endpoint.empty? ||
@@ -41,13 +39,14 @@ class InitialAuth
       "code_challenge_method=S256"
 
     # 認証コードを取得
-    puts "以下のURLにアクセスして認証コードを取得してください。"
+    puts "以下のURLにアクセスして連携を許可してください。"
     puts authorization_url
-    print "認証コード: "
-    @authorization_code = gets.chomp
+    print "許可後にリダイレクトされたページのURLを貼り付けてください。"
+    print "リダイレクトURL: "
+    @authorization_code = Hash[URI::decode_www_form(URI.parse(gets.chomp).query)]['code']
   end
 
-  def authenticate
+  def save_token
     # Basic認証ヘッダーの作成
     basic_auth = Base64.strict_encode64("#{@client_id}:#{@client_secret}")
 
@@ -75,6 +74,7 @@ class InitialAuth
         file.write(JSON.pretty_generate(tokens))
       end
       puts "認証に成功しました。tokens.jsonを更新しました。"
+      return tokens
     else
       puts "認証に失敗しました。ステータスコード: #{response.code}"
       puts "メッセージ: #{response.body}"
@@ -84,6 +84,3 @@ class InitialAuth
   end
 end
 
-auth = InitialAuth.new
-auth.get_authorization_code
-auth.authenticate

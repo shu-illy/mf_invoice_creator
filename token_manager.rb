@@ -1,12 +1,10 @@
-# token_manager.rb
-
 require 'httparty'
 require 'json'
 require 'dotenv/load'
 require 'fileutils'
 require 'base64'
-
 require 'pry'
+require './initial_auth'
 
 class TokenManager
   TOKEN_FILE = 'tokens.json'.freeze
@@ -18,11 +16,26 @@ class TokenManager
     raise "CLIENT_ID is not set in .env" if @client_id.nil? || @client_id.empty?
     raise "CLIENT_SECRET is not set in .env" if @client_secret.nil? || @client_secret.empty?
 
-    load_tokens
+    # トークン読み込み
+    if File.exist?(TOKEN_FILE)
+      file_content = File.read(TOKEN_FILE)
+      @tokens = JSON.parse(file_content)
+    else
+      @tokens = { 'access_token' => '', 'refresh_token' => '', 'expires_at' => 0 }
+      save_tokens
+    end
   end
 
   # アクセストークンを取得（必要に応じて更新）
   def access_token
+    # 初回認証
+    if @tokens['access_token'].nil? || @tokens['access_token'].empty?
+      inital_auth = InitialAuth.new
+      inital_auth.get_authorization_code
+      @tokens = inital_auth.save_token
+      return @tokens['access_token']
+    end
+    
     if access_token_expired?
       refresh_access_token
     else
@@ -32,25 +45,13 @@ class TokenManager
 
   private
 
-  # トークンファイルを読み込む
-  def load_tokens
-    if File.exist?(TOKEN_FILE)
-      file_content = File.read(TOKEN_FILE)
-      @tokens = JSON.parse(file_content)
-      p @tokens
-    else
-      @tokens = { 'access_token' => '', 'refresh_token' => '', 'expires_at' => 0 }
-      save_tokens
-    end
-  end
-
   # トークンファイルを保存する
   def save_tokens
     File.open(TOKEN_FILE, 'w') do |file|
       file.write(JSON.pretty_generate(@tokens))
     end
   end
-
+  
   # アクセストークンが期限切れかどうかを確認する
   def access_token_expired?
     current_time = Time.now.to_i
