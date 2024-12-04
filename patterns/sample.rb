@@ -1,26 +1,22 @@
-# patterns/pattern_a.rb
-
-#!/usr/bin/env ruby
-
 require 'yaml'
 require 'dotenv/load'
 require 'optparse'
 require 'date'
 require_relative '../invoice_creator'
 
-# 下記の変数の値を編集してください
+# 下記の変数の値を編集する
 # -----------------------------------
 department_id = 'xxxxxxxxxx'
 billing_date = Date.today.strftime('%Y-%m-%d') # 請求日（例: 今日の日付）
 due_date = Date.new(Date.today.year, Date.today.month, -1).strftime('%Y-%m-%d') # 振込期限（例: 今月末）
 sales_date = Date.new(Date.today.last_month, Time.now.month, -1).strftime('%Y-%m-%d') # 売上計上日（例: 先月末）
 item_name = 'システム開発費用' # 品目名
-item_price = 5000 # 単価
+item_price = 10000 # 単価
 download_path = '/path/to/download.pdf' # 請求書PDFの保存先
 consumption_tax_display_type = 'internal' # 内税 or 外税（'internal' or 'external'）
 # -----------------------------------
 
-# コマンドの引数でパラメータを渡したい場合は、以下のオプションを有効にしてください
+# コマンドの引数でパラメータを渡したい場合は、以下のコメントアウトを外す
 # -----------------------------------
 # options = {}
 # OptionParser.new do |opts|

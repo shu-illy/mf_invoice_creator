@@ -1,5 +1,3 @@
-# invoice_creator_class.rb
-
 require 'httparty'
 require 'json'
 require 'fileutils'
@@ -13,8 +11,11 @@ class InvoiceCreator
     @access_token = token_manager.access_token
   end
 
-  # 請求書を作成するメソッド
-  # params: Hash - 請求書作成に必要なパラメータ
+  #
+  # 請求書を作成する
+  #
+  # @param [Hash] params 請求書作成の各種パラメータ
+  #
   def create_invoice(params)
     headers = {
       "Content-Type" => "application/json",
@@ -39,9 +40,12 @@ class InvoiceCreator
     nil
   end
 
-  # 請求書のPDFをダウンロードするメソッド
-  # pdf_url: String - PDFのURL
-  # pdf_path: String - 保存先のパス
+  #
+  # 請求書のPDFをダウンロードする
+  #
+  # @param [String] pdf_url PDFのURL
+  # @param [String] pdf_path PDF保存先のパス
+  #
   def download_pdf(pdf_url, pdf_path)
     headers = {
       "Authorization" => "Bearer #{@access_token}"
@@ -65,6 +69,11 @@ class InvoiceCreator
     puts "例外が発生しました: #{e.message}"
   end
 
+  #
+  # 請求書のステータスを「未入金」に変更する
+  #
+  # @param [String] billing_id <description>
+  #
   def update_to_before_billing(billing_id)
     url = "https://invoice.moneyforward.com/api/v3/billings/#{billing_id}/payment_status".freeze
 

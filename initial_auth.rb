@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 require 'httparty'
 require 'json'
 require 'dotenv/load'

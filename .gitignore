@@ -4,9 +4,6 @@
 
 .DS_Store
 
-/log/
-/tmp/
-
 tokens.json
 
 patterns/*
